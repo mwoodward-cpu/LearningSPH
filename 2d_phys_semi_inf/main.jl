@@ -156,7 +156,7 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
 		end
 		update!(opt, p_h, ∇L)
 		Vel_inc_pred_k[k, :, :] = Vel_inc_pred[:, :, 1];
-        if mod(k, vis_rate) == 0
+        	if mod(k, vis_rate) == 0
 			if method == "eos_nn"
 				Pnn_comp(ρ) = re(p_h)([ρ])[1];
 				P_nn[k, :] = Pnn_comp.(rho_data);
@@ -180,11 +180,10 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
 			println("Itr  = ", k, " $(loss_method):  Loss = ", L_itr[ii])
 			ii += 1;
 			save_output_data(p_h, "./$(data_out_path)/params_intermediate.npy")
-        end
+        		end
 		comparing_Gu(G_u, Vel_inc_pred, "train", θ, window)
     end
-	# animate_learning(n_itrs, rho_data, P_gt, P_nn)
-	return L_itr, rot_QF, rot_RF, gal_inv, Vel_inc_pred_k, p_h, P_nn, c_itr, α_itr, β_itr, g_itr
+    return L_itr, rot_QF, rot_RF, gal_inv, Vel_inc_pred_k, p_h, P_nn, c_itr, α_itr, β_itr, g_itr
 end
 
 
