@@ -176,10 +176,10 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
 			println("F(X-s) = ", gal_inv[ii], "   F(Y-s) = ", gal_Y_shift)
 			save_output_data(p_h, "./$(data_out_path)/params_intermediate.npy")
 			ii +=1;
-        end
+        	end
 		update!(opt, p_h, ∇L)
     end
-	return p_h, Vel_inc_pred_k, P_nn, L_itr, rot_RF, gal_inv, c_itr, α_itr, β_itr, g_itr
+    return p_h, Vel_inc_pred_k, P_nn, L_itr, rot_RF, gal_inv, c_itr, α_itr, β_itr, g_itr
 end
 
 p_fin, Vel_inc_pred_k, P_nn, L_out, rot_RF, galilean_inv, c_out, α_out, β_out, g_out =
