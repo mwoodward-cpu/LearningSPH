@@ -1,9 +1,8 @@
 
 
 """
-2D fsa with forwardiff AD
-
-learning less informed --> physics informed SPH
+					2D Sensitivity analysis
+   
 """
 
 
