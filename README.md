@@ -24,7 +24,7 @@ in 3d(or 2d)_phys_semi_inf directories, there is a julia file sph_av_3d.jl (or s
 ### Learning algorithm
 The main.jl file consists of our mixed mode learning algorithm. To select which SA method is used, uncomment either sens_method = "forward" or sens_method="adjoint". The loss method is selected simlarly between a combination of the loss functions described above (we find the best results, and for those reasons discussed further in the paper, that loss_method = "kl_lf" performs best; which is the lagrangian statistical based loss using the KL-divergence + the field based loss function using the MSE of difference in velocity fields. The model is selected for by uncommenting "method". Once the model, and methods are choosen for learning, along with the hyper-parameters of the learning, then the ground truth SPH data must be loaded. Running the main.jl file will output all necessary data that can be used in the post_processing directory.
 
-### Paper
+## Paper
 
 for more details see our paper at (PROVIDE LINK).
 
