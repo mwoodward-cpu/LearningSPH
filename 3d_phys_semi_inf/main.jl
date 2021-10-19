@@ -52,7 +52,6 @@ method = "node";
 # method = "rot_inv"
 # method = "eos_nn"
 # method = "grad_p"
-# method = "Wnn"
 # method = "phys_inf"
 
 #-----physical parameters (known gt and initial guess)
@@ -113,10 +112,14 @@ include("./integrators_utils.jl")
 println("n_params = ", n_params)
 
 
-#-------------- Learning with Probabalistic loss function
 
 
+
+#-------------- Mixed mode learning
+
+#obtain ground truth velocity field
 Vf_gt,d1,d2,d3,d4,d5,d6 = obtain_interpolated_velocity_over_τ(traj_gt, vels_gt, rhos_gt, T)
+
 
 # opt = ADAM(lr);
 function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
@@ -147,16 +150,11 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
 			∇L = compute_adjoint_∇L(λT, ∂F_pT)
 		end
 		Vel_inc_pred_k[k, :, :] = Vel_inc_pred[:, :, 1];
-        if mod(k, vis_rate) == 0
+        	if mod(k, vis_rate) == 0
 			if method == "eos_nn"
 				Pnn_comp(ρ) = re(p_h)([ρ])[1];
 				P_nn[k, :] = Pnn_comp.(rho_data);
 				compare_eos(p_h);
-			end
-			if method == "Wnn"
-				Wnn_comp(r) = W_nn(r, p_h);
-				W_nn_data[k, :] = Wnn_comp.(r_data);
-				compare_W(p_h);
 			end
 			L = compute_L(Vel_inc_gt, Vel_inc_pred, G_u, G_v, hu_kde_gt, hv_kde_gt,
 				 			  traj_gt, traj_pred, vels_pred, rhos_pred)
@@ -181,10 +179,10 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
         end
 		update!(opt, p_h, ∇L)
     end
-	return p_h, Vel_inc_pred_k, P_nn, W_nn_data, L_itr, rot_RF, gal_inv, c_itr, α_itr, β_itr, g_itr
+	return p_h, Vel_inc_pred_k, P_nn, L_itr, rot_RF, gal_inv, c_itr, α_itr, β_itr, g_itr
 end
 
-p_fin, Vel_inc_pred_k, P_nn, W_nn_data, L_out, rot_RF, galilean_inv, c_out, α_out, β_out, g_out =
+p_fin, Vel_inc_pred_k, P_nn, L_out, rot_RF, galilean_inv, c_out, α_out, β_out, g_out =
 	training_algorithm(loss_method, n_itrs, vis_rate, T, p_hat);
 
 
@@ -204,10 +202,6 @@ animate_Gu_fixt(n_itrs, Vel_inc_pred_k, window, 40)
 if method == "eos_nn"
 	rho_data = 0.9:0.005:1.1; P_gt = Pres.(rho_data, c_gt, g);
 	animate_learning_EoS(n_itrs, rho_data, P_gt, P_nn, 40)
-end
-if method == "Wnn"
-	r_data = 0.0:0.01:(2*h); W_gt = W.(r_data, h)
-	animate_learning_W(n_itrs, r_data, W_gt, W_nn_data, 40)
 end
 
 if method == "phys_inf"
