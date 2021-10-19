@@ -13,7 +13,7 @@ Method: (approaching turbulence)
 """
 
 
-n_list = 30;
+n_list = 25;
 n_features = 4*n_list;
 
 NN = Chain(

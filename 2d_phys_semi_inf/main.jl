@@ -26,9 +26,9 @@ const r = 5.0;			#number of smoothing (r*hkde) lengths for determining bounds of
 const h_kde = 0.9;	#smoothing parameter h; using simpsons rule;
 const nb = "all";				# number of samples in batching
 const n_int = 220;  	#number of integration points in numerical computation of KL
-const t_start = 3205;    # time just after stationarity is reached
+const t_start = 1;    # time just after stationarity is reached
 const window = 0.2;
-const height = 8;
+const height = 10;
 const t_decay = ceil(Int, 0.6*n_itrs);			#iteration decay of lr begins
 
 println("height = ", height)
@@ -45,21 +45,21 @@ sens_method = "forward"
 # loss_method = "kl_l2_t"
 # loss_method = "kl_one_dist"
 # loss_method = "kl_t_one_dist"
-loss_method = "lf"
+# loss_method = "lf"
 # loss_method = "kl_lf_t"
-# loss_method = "kl_lf"
+loss_method = "kl_lf"
 
-# switch_kl_lf = 0; s_itr = n_itrs;
-switch_kl_lf = 1; s_itr = 0.5 * n_itrs;
+switch_kl_lf = 0; s_itr = n_itrs;
+# switch_kl_lf = 1; s_itr = 0.5 * n_itrs;
 # switch_kl_lf = 1; s_itr = 20;
 
-# method = "node"
+method = "node"
 # method = "nnsum"
 # method = "nnsum2"
 # method = "rot_nn"
 # method = "eos_nn"
 # method = "grad_p"
-method = "phys_inf"
+# method = "phys_inf"
 
 # IC = "Vrandn"
 IC = "s_hit"
@@ -86,9 +86,9 @@ const θ = 8e-2;
 const cdt = 0.4;
 const dt = coarse_mult * cdt * h / c_gt;
 
-const traj_gt = npzread("./data/traj_N1024_T6001_ts5801_h0.2_s_hit_cdt0.4_c12.0_α1.0_β2.0_θ0.08_AV_neg_rel_ke.npy")[t_start:coarse_mult:end, :, :];
-const vels_gt = npzread("./data/vels_N1024_T6001_ts5801_h0.2_s_hit_cdt0.4_c12.0_α1.0_β2.0_θ0.08_AV_neg_rel_ke.npy")[t_start:coarse_mult:end, :, :];
-const rhos_gt = npzread("./data/rhos_N1024_T6001_ts5801_h0.2_s_hit_cdt0.4_c12.0_α1.0_β2.0_θ0.08_AV_neg_rel_ke.npy")[t_start:coarse_mult:end, :];
+const traj_gt = npzread("./data/traj_N1024_T50_ts3205_h0.2_s_hit_cdt0.4_c12.0_α1.0_β2.0_θ0.08_AV_neg_rel_ke.npy")[t_start:end,:,:];
+const vels_gt = npzread("./data/vels_N1024_T50_ts3205_h0.2_s_hit_cdt0.4_c12.0_α1.0_β2.0_θ0.08_AV_neg_rel_ke.npy")[t_start:end, :, :];
+const rhos_gt = npzread("./data/rhos_N1024_T50_ts3205_h0.2_s_hit_cdt0.4_c12.0_α1.0_β2.0_θ0.08_AV_neg_rel_ke.npy")[t_start:end, :];
 
 
 const N = size(traj_gt)[2];
@@ -188,7 +188,7 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
 end
 
 
-L_out, rot_QF, rot_RF, galilean_inv, Vel_inc_pred_k, p_fin, P_nn, 
+L_out, rot_QF, rot_RF, galilean_inv, Vel_inc_pred_k, p_fin, P_nn,
 c_out, α_out, β_out, g_out  =
 	training_algorithm(loss_method, n_itrs, vis_rate, T, p_hat)
 

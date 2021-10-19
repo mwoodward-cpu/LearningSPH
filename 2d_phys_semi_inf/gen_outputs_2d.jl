@@ -37,10 +37,10 @@ function comparing_Gu(G_u, Vel_inc_pred, path, θ_in, width=0.42)
     x_s = -width
     x_e = width
     G_pred(x) = kde(x, Vel_inc_pred[T, :, 1])
-    plt = plot(x->G_u(x), x_s, x_e, label=L"G(\tau, d)",
+    plt = plot(x->G_u(x), x_s, x_e, label=L"G(\tau, \delta u)",
                 color="indigo", linewidth = 2.5)
     plot!(x->G_pred(x), x_s, x_e, marker=:x, markersize=4, color="forestgreen",
-          markercolor = :black, label=L"G_{\theta}(\tau, d)",
+          markercolor = :black, label=L"G_{\theta}(\tau, \delta u)",
           linestyle=:dash, linewidth = 2.5)
 
     title!(L"\textrm{Comparing - } G(\tau,z) \textrm{ - and - } \hat{G}_{\theta}(\tau,z)", titlefont=18)
@@ -66,11 +66,11 @@ function animate_Gu_fixt(n_itrs, Vel_inc_pred_k, width=0.42, sim_time=10)
     gr(size=(600,600))
     println("**************** Animating ***************")
     anim = @animate for i ∈ 1 : n_itrs
-        plt = plot(x->G_u(x), x_s, x_e, label=L"G(\tau, d)",
+        plt = plot(x->G_u(x), x_s, x_e, label=L"G(\tau, \delta u)",
                     color="indigo", linewidth = 2.5)
         plot!(x->Gu_pred(i, x), x_s, x_e, marker=:x, markersize=4,
               color="forestgreen", markercolor = :black,
-              label=L"G_{\theta}(\tau, d)", linestyle=:dash, linewidth = 2.5)
+              label=L"G_{\theta}(\tau, \delta u)", linestyle=:dash, linewidth = 2.5)
         title!(L"\textrm{Comparing } G(\tau,z) \textrm{ and } \hat{G}_{\theta}(\tau,z)", titlefont=20)
         xlabel!(L"\textrm{Velocity increment}", xtickfontsize=12, xguidefontsize=20)
         ylabel!(L"G_u \textrm{ distribution}", ytickfontsize=12, yguidefontsize=20)

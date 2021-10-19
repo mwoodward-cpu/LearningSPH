@@ -20,10 +20,6 @@ nt_samp = 1;                        #number of random samples in time for obtain
 M = nt_samp * N                     #total number of particles used in forming G_gt with kde
 N_samp = ceil(Int, 1/nt_samp*M)     #total number of samples of true distribution (must be less than M)
 
-#
-# #----Load data and set ICs
-# traj_gt = npzread("./data/traj_N1024_T500_ts1_h0.25_s_hit_cdt0.4_c12.0_α1.0_β_2.0_AV.npy")
-# vels_gt = npzread("./data/vels_N1024_T500_ts1_h0.25_s_hit_cdt0.4_c12.0_α1.0_β_2.0_AV.npy")
 
 
 """
@@ -156,9 +152,6 @@ K_prime(x) = ForwardDiff.derivative(x -> K(x), x) #(used in computing ∇L)
 
 
 function kde(z, z_data)
-    # # K(x) = 1/(sqrt(2*pi))*exp(-x^2/2) #guassian kernel
-    # # K(x) = maximum([1 - abs(x), 0])     #triangle (produces frequency polygon)
-    # K(x) = 3/4*maximum([1 - x^2, 0])   #Epanechnikov
     Nm = length(z_data);
         #silvermans rule (h_kde = 0.9)
     h = h_kde * std(z_data)*Nm^(-1/5)
