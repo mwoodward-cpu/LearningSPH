@@ -23,12 +23,12 @@ const vis_rate = 1;		#sampling frequency for output
 const lr = 5e-2; 			#initial lr (later adapted with ADAM)
 const t0 = 1; 				#time shift of data learned on
 const mag = 1.0;			#Amplitude of external forcing
-const h_kde = 0.9;			#factor of h for kde: silvermans rule 0.9 
+const h_kde = 0.9;			#factor of h for kde: silvermans rule 0.9
 const r = 5.0;			#number of smoothing (r*hkde) lengths for determining bounds of integration in KL
 # nb = 1024;			#number of batches (if nb == N, this does relabeling of particles)
 const nb = "all"			#don't permute particles and no batching
 const n_int = 200; 		#number of integration points in KL (n_int >190 is sufficient)
-const t_start = 20;             #time shift of IC of truth data to learn on. 
+const t_start = 20;             #time shift of IC of truth data to learn on.
 const t_decay = round(Int, 0.9*n_itrs);			#time decay begins
 const window = 1.2;	   				#domain for plotting G_u distributions (velocity increment dist'ns)
 const height = 5;                                       #height of NN (see sensitivities of NN structure)
@@ -47,8 +47,8 @@ loss_method = "kl_lf"
 switch_kl_lf = 1;  #switching to kl_lf loss function after 0.6*n_itrs
 # switch_kl_lf = 0;   #keep same loss_method
 
-method = "node"; 
-# method = "nnsum"
+# method = "node";
+method = "nnsum"
 # method = "rot_inv"
 # method = "eos_nn"
 # method = "grad_p"
@@ -134,7 +134,6 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
 	g_itr = zeros(round(Int, n_itrs/vis_rate))
 	rho_data = 0.9:0.005:1.1; r_data = 0.0:0.01:2*h;
 	P_nn = zeros(round(Int, n_itrs/vis_rate), size(rho_data)[1]);
-	W_nn_data = zeros(round(Int, n_itrs/vis_rate), size(r_data)[1]);
 	P_gt = Pres.(rho_data, c_gt, g);
 	ii = 1;
 	opt = Optimiser(ExpDecay(lr, 0.1, t_decay, 1e-4), ADAM(lr))
