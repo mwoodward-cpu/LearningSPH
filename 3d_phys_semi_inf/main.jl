@@ -17,7 +17,7 @@ using BSON: @save
 
 
 const T = 10;				#number of time steps in integration (forward prediction)
-const coarse_mult = 1;		#coarse graining in time (set to 1 unless long time training requries data reduction speed up)
+const coarse_mult = 1;		#coarse graining in time (set to 1)
 const n_itrs = 3000;		#number of iteration
 const vis_rate = 1;		#sampling frequency for output
 const lr = 5e-2; 			#initial lr (later adapted with ADAM)
@@ -47,13 +47,13 @@ loss_method = "kl_lf"
 switch_kl_lf = 1;  #switching to kl_lf loss function after 0.6*n_itrs
 # switch_kl_lf = 0;   #keep same loss_method
 
-# method = "node"; 
+method = "node"; 
 # method = "nnsum"
 # method = "rot_inv"
 # method = "eos_nn"
 # method = "grad_p"
 # method = "Wnn"
-method = "phys_inf"
+# method = "phys_inf"
 
 #-----physical parameters (known gt and initial guess)
 
