@@ -1,3 +1,0 @@
-# 3D post processing
-
-In this directory, the learned models are provided, however in order to reproduce the results as seen in the associated paper, the learned models must be used to generate predicted flow data (as is done in compare_learned_models.jl and compare_learned_sims.jl and simulate_learned_model.jl). With this predicted data, one can perfore the generalizability analysis and plot the results as seen in plot_gen_errors.jl. Further data needs to be generated using a range of theta values as seen in the external forcing in order to produce the data required to compare the generalizations over Re.
