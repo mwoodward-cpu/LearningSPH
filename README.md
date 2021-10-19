@@ -14,12 +14,12 @@ The code is found in sensitivity_(model).jl, which combines both SA and AD.
 We construct three different loss functions: trajectory based (Lagrangian), field based Eulerian, and Lagrangian statistics based, all found in the loss_functions.jl file. Since our overall goal involves learning SPH models for turbulence applications, it is the underlying statistical features and large scale field structures we want our models to learn and generalize with.
 
 
-#Running code
+## Running code
 We provide some general guidance for reproduciblity.
 
 
-## Generate SPH data
+### Generate SPH data
 in 3d(or 2d)_phys_semi_inf directories, there is a julia file sph_av_3d.jl (or sph_2d_av_turb_ke.jl) for simulating Eulers equations with an Artificial viscosity form and using weakly compressible formulation; see our paper for more details. Parameters of the simulator are commented. Note that some SPH flow data is already provided in the data directories (where parameters are selected as described in the paper). 
 
-## Learning algorithm
+### Learning algorithm
 The main.jl file consists of our mixed mode learning algorithm. To select which SA method is used, uncomment either sens_method = "forward" or sens_method="adjoint". The loss method is selected simlarly between a combination of the loss functions described above (we find the best results, and for those reasons discussed further in the paper, that loss_method = "kl_lf" performs best; which is the lagrangian statistical based loss using the KL-divergence + the field based loss function using the MSE of difference in velocity fields. The model is selected for by uncommenting "method"
