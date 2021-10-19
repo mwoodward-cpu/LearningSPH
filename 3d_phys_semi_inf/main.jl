@@ -2,7 +2,7 @@
 """
 					Mixed Mode AD + Senstivity analysis SPH_AV
 
-					KL divergence using only velocity increment δvᵢ
+				      Learing hierarhcy of parameterized SPH models
 
 
 """
