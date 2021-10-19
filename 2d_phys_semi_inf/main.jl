@@ -180,7 +180,7 @@ function training_algorithm(l_method, n_itrs, vis_rate, T, p_h)
 			println("Itr  = ", k, " $(loss_method):  Loss = ", L_itr[ii])
 			ii += 1;
 			save_output_data(p_h, "./$(data_out_path)/params_intermediate.npy")
-        		end
+        	end
 		comparing_Gu(G_u, Vel_inc_pred, "train", θ, window)
     end
     return L_itr, rot_QF, rot_RF, gal_inv, Vel_inc_pred_k, p_h, P_nn, c_itr, α_itr, β_itr, g_itr
