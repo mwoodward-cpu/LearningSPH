@@ -1,14 +1,9 @@
 
 
 """
-					Forward Senstivity analysis SPH_AV
+					Senstivity analysis NN Summan 2
+using different features
 
-Method: (approaching turbulence)
-  -Decaying turbulence
-  -Continuous formulation of SA
-  -Forward mode AD for ∂F_∂θ
-
-   learning c, α, β, g, θ
 
 """
 

@@ -1,15 +1,8 @@
 
 
 """
-					Forward Senstivity analysis SPH_AV
+					Senstivity analysis Phys_inf model
 
-Method: (approaching turbulence)
-  -Probabalistic loss
-  -external forcing
-  -Forward diff AD for ∂F_∂θ
-
-
-  wrt paramters c, a, b, g
 
 """
 

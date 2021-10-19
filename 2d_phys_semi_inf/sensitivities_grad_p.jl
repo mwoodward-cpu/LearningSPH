@@ -1,10 +1,7 @@
 
 
 """
-					Mixed mode Senstivity analysis SPH_AV
-
-Rotationally invaraint NN for summand term
-  ∑ NN(p/ρ^2, xx * vv, ||xx||)*xx
+					Mixed mode Senstivity analysis grad P
 
 """
 

@@ -1,7 +1,7 @@
 
 
 """
-					Forward Senstivity analysis SPH_AV
+					Senstivity analysis SPH_AV
 
 Learning EoS from SPH data
 

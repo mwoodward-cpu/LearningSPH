@@ -1,14 +1,8 @@
 
 
 """
-					Forward Senstivity analysis SPH_AV
+					Senstivity analysis NODE model
 
-Method: (approaching turbulence)
-  -Decaying turbulence
-  -Continuous formulation of SA
-  -Forward mode AD for ∂F_∂θ
-
-   learning c, α, β, g, θ
 
 """
 

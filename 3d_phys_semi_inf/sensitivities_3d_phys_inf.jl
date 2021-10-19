@@ -1,12 +1,7 @@
 
 
 """
-					Forward Senstivity analysis SPH_AV
-
-Method: (approaching turbulence)
-  -Decaying turbulence
-  -Continuous formulation of SA
-  -Forward mode AD for ∂F_∂θ
+				Senstivity analysis Phys_inf model
 
    learning c, α, β, g
 

@@ -1,10 +1,8 @@
 
 
 """
-					Mixed mode Senstivity analysis SPH_AV
+					Mixed mode Senstivity analysis ∇P_nn
 
-Rotationally invaraint NN for summand term
-  ∑ NN(p/ρ^2, xx * vv, ||xx||)*xx
 
 """
 
@@ -17,18 +15,8 @@ NN = Chain(
       Dense(height, 1)        #R^h -> R^1
     )
 
-#
-if restart == "true"
-      using BSON: @load
-      nn_data_dir = "./output_data_forward_grad_p_kl_lf_Vrandn_itr2000_lr0.05_T10_D3_N4096_c10.0_α1.0_β2.0_h0.335_nball_nint200_ts20_coarse1_height5_klswitch1"
-        params_path = "$(nn_data_dir)/params_intermediate.npy"
-        p_hat = npzread(params_path)
-        p_, re = Flux.destructure(NN)   #flatten nn params
-end
 
-if restart != "true"
-  p_hat, re = Flux.destructure(NN)   #flatten nn params
-end
+p_hat, re = Flux.destructure(NN)   #flatten nn params
 n_params = size(p_hat)[1]
 
 #------- Smoothing kernel and necessary derivatives

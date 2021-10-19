@@ -1,14 +1,8 @@
 
 
 """
-					Forward Senstivity analysis SPH_AV
+					Sensitivities for EoS NN
 
-Method: (approaching turbulence)
-  -Decaying turbulence
-  -Continuous formulation of SA
-  -Forward mode AD for ∂F_∂θ
-
-   learning c, α, and β
 
 """
 
@@ -19,17 +13,7 @@ NN = Chain(
     )
 
 
-if restart == "true"
-      using BSON: @load
-      nn_data_dir = "./output_data_forward_eos_nn_lf_Vrandn_itr2001_lr0.05_T10_D3_N4096_c10.0_α1.0_β2.0_h0.335_nball_nint200_ts20_coarse1_height10_klswitch0"
-        params_path = "$(nn_data_dir)/params_intermediate.npy"
-        p_hat = npzread(params_path)
-        p_, re = Flux.destructure(NN)   #flatten nn params
-end
-
-if restart != "true"
-  p_hat, re = Flux.destructure(NN)   #flatten nn params
-end
+p_hat, re = Flux.destructure(NN)   #flatten nn params
 n_params = size(p_hat)[1]
 
 #------- Smoothing kernel and necessary derivatives

@@ -1,7 +1,7 @@
 
 
 """
-					Mixed mode Senstivity analysis SPH_AV
+					Mixed mode Senstivity analysis Rot Inv
 
 Rotationally invaraint NN for summand term
   ∑ NN(p/ρ^2, xx * vv, ||xx||)*xx
@@ -16,7 +16,6 @@ NN = Chain(
       Dense(height, height, tanh),
       Dense(height, 1)        #R^h -> R^1
     )
-
 
 p_hat, re = Flux.destructure(NN)   #flatten nn params
 f_nn(x) = NN(x)  #input needs to be [float]

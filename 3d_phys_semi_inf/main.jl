@@ -1,19 +1,9 @@
 
 """
-					Forward Senstivity analysis SPH_AV
+					Mixed Mode AD + Senstivity analysis SPH_AV
 
 					KL divergence using only velocity increment δvᵢ
 
-					Fixed tau, integral loss
-
-Notes:
-		-- implementing Forward mode AD to compute ∂F_p (10 times faster than reverse mode here)
-		-- hard coding ∂F_x in order to use the same neighborhood list
-
-Method: (approaching turbulence)
-	-Probabalistic loss
-	-external forcing
-	-Forward diff AD for ∂F_∂θ
 
 """
 
@@ -26,23 +16,22 @@ using Flux.Losses
 using BSON: @save
 
 
-const T = 10;				#number of time steps in integration
-const coarse_mult = 1;		#coarse graining in time (skipping time steps)
-const n_itrs = 5;		#number of iteration
+const T = 10;				#number of time steps in integration (forward prediction)
+const coarse_mult = 1;		#coarse graining in time (set to 1 unless long time training requries data reduction speed up)
+const n_itrs = 3000;		#number of iteration
 const vis_rate = 1;		#sampling frequency for output
 const lr = 5e-2; 			#initial lr (later adapted with ADAM)
 const t0 = 1; 				#time shift of data learned on
 const mag = 1.0;			#Amplitude of external forcing
-const h_kde = 0.9;			#factor of h for kde silvermans rule 0.9 (also 2.0 works well for having smooth derivative)
-# const τ = T;				#Fixed tau method
+const h_kde = 0.9;			#factor of h for kde: silvermans rule 0.9 
 const r = 5.0;			#number of smoothing (r*hkde) lengths for determining bounds of integration in KL
 # nb = 1024;			#number of batches (if nb == N, this does relabeling of particles)
 const nb = "all"			#don't permute particles and no batching
-const n_int = 200; 		#number of integration points in KL
-const t_start = 20;
+const n_int = 200; 		#number of integration points in KL (n_int >190 is sufficient)
+const t_start = 20;             #time shift of IC of truth data to learn on. 
 const t_decay = round(Int, 0.9*n_itrs);			#time decay begins
-const window = 1.2;
-const height = 5;
+const window = 1.2;	   				#domain for plotting G_u distributions (velocity increment dist'ns)
+const height = 5;                                       #height of NN (see sensitivities of NN structure)
 
 # sensitivity method:
 sens_method = "forward"
@@ -51,14 +40,14 @@ sens_method = "forward"
 # loss_method = "kl_t"
 # loss_method = "kl"
 # loss_method = "kl_one_dist"
-loss_method = "lf"
+# loss_method = "lf"
 # loss_method = "l2"
-# loss_method = "kl_lf"
+loss_method = "kl_lf"
 
-switch_kl_lf = 1;
-# switch_kl_lf = 0;
+switch_kl_lf = 1;  #switching to kl_lf loss function after 0.6*n_itrs
+# switch_kl_lf = 0;   #keep same loss_method
 
-# method = "node"; restart = "true"
+# method = "node"; 
 # method = "nnsum"
 # method = "rot_inv"
 # method = "eos_nn"
@@ -66,7 +55,6 @@ switch_kl_lf = 1;
 # method = "Wnn"
 method = "phys_inf"
 
-# restart = "true"
 #-----physical parameters (known gt and initial guess)
 
 const c = 10.0;

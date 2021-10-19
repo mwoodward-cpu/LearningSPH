@@ -1,14 +1,7 @@
 
 
 """
-					Forward Senstivity analysis SPH_AV
-
-Method: (approaching turbulence)
-  -Decaying turbulence
-  -Continuous formulation of SA
-  -Forward mode AD for ∂F_∂θ
-
-   learning c, α, β, g, θ
+				 Senstivity analysis NN Summand model
 
 """
 
@@ -21,22 +14,8 @@ NN = Chain(
       Dense(height, 3)        #R^h -> R^1
     )
 
-if restart == "true"
-      using BSON: @load
-      nn_data_dir = "./output_data_forward_nnsum_kl_lf_Vrandn_itr2000_lr0.05_T10_D3_N4096_c10.0_α1.0_β2.0_h0.335_nball_nint200_ts20_coarse1_height5_klswitch1/"
-        # @load "$(nn_data_dir)/NN_model.bson" NN
-        # println(NN)
-        # p_, re = Flux.destructure(NN)   #flatten nn params
-        # n_params2 = size(p_)[1]
-        # p = params(NN); n_list = floor(Int, size(p[1])[2]/6)
-        params_path = "$(nn_data_dir)/params_intermediate.npy"
-        p_hat = npzread(params_path)
-        p_, re = Flux.destructure(NN)   #flatten nn params
-        # n_params = size(p_hat)[1]
-        # println("n_params = ", n_params)
-end
 
-# p_hat, re = Flux.destructure(NN)   #flatten nn params
+p_hat, re = Flux.destructure(NN)   #flatten nn params
 f_nn(x) = NN(x)  #input needs to be [float]
 
 n_params = size(p_hat)[1]
