@@ -290,6 +290,16 @@ turb_ke = compute_turb_ke(vels)
 
 
 #-----------Outputs
+
+function make_dir(path)
+        if isdir(path) == true
+               println("directory already exists")
+           else mkdir(path)
+        end
+end
+
+make_dir("data"); make_dir("figures"); make_dir("sims")
+
 #-----------Outputs
 pos_path = "./data/traj_N$(N)_T$(T)_ts$(t_save)_h$(h)_$(IC)_cdt$(cdt)_c$(c)_α$(α)_β$(β)_θ$(θ)_$(method).npy"
 vel_path = "./data/vels_N$(N)_T$(T)_ts$(t_save)_h$(h)_$(IC)_cdt$(cdt)_c$(c)_α$(α)_β$(β)_θ$(θ)_$(method).npy"
