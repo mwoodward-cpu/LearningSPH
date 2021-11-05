@@ -1,5 +1,5 @@
 # Learning SPH
-Learn-able hierarchy of parameterized Smoothed Particle Hydrodynamics (SPH) models trained using mixed mode AD and Sensitivity Analysis (SA). See our paper at (PROVIDE LINK), for more details. 
+Learn-able hierarchy of parameterized Smoothed Particle Hydrodynamics (SPH) models trained using mixed mode AD and Sensitivity Analysis (SA). See our paper at [Arxiv](https://arxiv.org/pdf/2110.13311.pdf), for more details. 
 
 ## Hierarchy of models
 
@@ -26,7 +26,7 @@ The main.jl file consists of our mixed mode learning algorithm. To select which 
 
 ## Paper
 
-for more details see our paper at (PROVIDE LINK).
+for more details see our paper at [Arxiv](https://arxiv.org/pdf/2110.13311.pdf).
 
 citation:
 (PROVIDE BITEX CITATION)
