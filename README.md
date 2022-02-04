@@ -1,5 +1,5 @@
 # Learning SPH
-Learn-able hierarchy of parameterized Smoothed Particle Hydrodynamics (SPH) models trained using mixed mode AD and Sensitivity Analysis (SA) on both weakly compressible SPH ("clean") data and DNS ("real world") turbulence data. See our paper at https://arxiv.org/abs/2110.13311 for more details. 
+Learn-able hierarchy of parameterized Lagrangian models and Smoothed Particle Hydrodynamics (SPH) models trained using mixed mode AD and local Sensitivity Analysis (SA) on both weakly compressible SPH ("clean") data and DNS ("real world") turbulence data. See our paper at https://arxiv.org/abs/2110.13311 for more details. 
 
 ## Hierarchy of models
 
