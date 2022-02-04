@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#Submit this script with: sbatch filename
+
+#SBATCH --job-name=diff_sph
+#SBATCH --time=12:00:00   # walltime
+#SBATCH --nodes=1   # number of nodes
+#SBATCH --account=w21_melt   # account name
+#SBATCH --mail-user=mwoodward@email.arizona   # email address
+#SBATCH --mail-type=END
+#SBATCH --no-requeue   # do not requeue when preempted and on node failure                                        
+                                        
+### Run your work                                                                                                     
+source activate diff_sph_env
+                                        
+date
+python ./sph_grad_3d_gpu_klf_t2.py
+date
