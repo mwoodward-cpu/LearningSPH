@@ -1,9 +1,12 @@
 # Learning SPH
-Learn-able hierarchy of parameterized Lagrangian models and Smoothed Particle Hydrodynamics (SPH) models trained using mixed mode AD and local Sensitivity Analysis (SA) on both weakly compressible SPH ("clean") data and DNS ("real world") turbulence data. See our paper at https://arxiv.org/abs/2110.13311 for more details. 
+Learn-able hierarchy of parameterized Lagrangian models incrementally encoding Smoothed Particle Hydrodynamics (SPH) (physics informed) structure. Each model is trained using mixed mode AD and local Sensitivity Analysis (SA) on both weakly compressible SPH ("clean") data and DNS ("real world") turbulence data. The motivation of this is twofold; (1) to analyze the effects of adding know physical SPH based structure into the parameterized Lagrangian models; and (2) a priori we do not know which model will learn the underlying physics (and generalize to other flows) of the "real world" DNS data. See our paper at https://arxiv.org/abs/2110.13311 for more details. 
 
 ## Hierarchy of models
 
-We develop a hierarchy of parameterized Lagrangian models that we train and anlyze on both SPH and DNS data. The motivation of this is twofold; (1) to analyze the effects of adding know physical SPH based structure into the parameterized Lagrangian models; and (2) a priori we do not know which model will learn the underlying physics (and generalize to other flows) of the "real world" DNS data. We hard code SPH structure into a hierarchy of parameterized models that includes physics based and NN based parameters. Multilayer Perceptrons (MLPs) with hyperbolic tangent activation functions are used as a universal function approximators embedded within an ODE structure describing the Lagrangian flows. It was found through hyper-parameter tuning that 2 hidden layers were sufficient for each model using a NN. 
+We develop a hierarchy of parameterized Lagrangian models that we train and anlyze on both SPH and DNS data. Starting from the least informed Neural ODE based model, and incrementally enforcing physical structure using SPH based modeling until the model is a fully parameterized weakly compressible SPH formulation with a novel parameteried smoothing kernel. Multilayer Perceptrons (MLPs) with hyperbolic tangent activation functions are used as a universal function approximators and are embedded within the ODE structure describing the Lagrangian flows, such as in approximating the Equation of State within SPH model. It was found through hyper-parameter tuning that 2 hidden layers were sufficient for each model using a NN. 
+
+## New parameterized smoothing kernel
+We develop and use a new parameterized smoothing kernel, which after training on DNS data is found to perform best at generalizing to other flows not seen in training. 
 
 ## Mixed mode AD with Sensitivity analysis
 Local sensitivity analysis (SA) is a classical technique found in many applications, such as gradient-based optimization, optimal control, parameter identification, model diagnostics; which was also utilized recently to  learn neural network parameters within ODEs (such as in Neural ODE). In the context of this work, we use SA to compute gradients of our hierarchy of parameterized models. We mix SA with Automatic Differentiation (AD);  forward mode and reverse mode AD is applied to derivatives within the SA algorithm, where the method is chosen based on efficiency (depending on the dimension of the input and output space of the function being differentiated).
@@ -18,7 +21,7 @@ We construct three different loss functions: trajectory based (Lagrangian), fiel
 We provide some general guidance for reproduciblity.
 
 
-### Generate SPH data
+### SPH training data: 
 in 3d(or 2d)_phys_semi_inf directories, there is a julia file sph_av_3d.jl (or sph_2d_av_turb_ke.jl) for simulating Eulers equations with an Artificial viscosity form and using weakly compressible formulation; see our paper for more details. Parameters of the simulator are commented. Note that some SPH flow data is already provided in the data directories (where parameters are selected as described in the paper). 
 
 ### Learning algorithm
