@@ -179,7 +179,7 @@ function obtain_sph_AV_A(X, V, p_in)
     end   end
   end
 
-  if extern_f=="determistic"
+  if extern_f=="deterministic"
     for i in 1 : D
       A[:, i] += (θ_in/(2*tke)) * rho .* (V[:, i])
     end
@@ -332,6 +332,7 @@ function simulate(pos, sim_time=5)
     #theme(:juno)
     n_2 = round(Int,N/2)
     anim = @animate for i ∈ 1:(T+1)
+         println("time step = ", i)
          Plots.scatter(pos[i, 1:n_2, 1], pos[i, 1:n_2, 2], pos[i, 1:n_2, 3],
          title = "WCSPH_$(method): N=$(N), h=$(h), c=$(c)", xlims = [0, 2*pi], ylims = [0,2*pi], zlims = [0,2*pi], legend = false)
          Plots.scatter!(pos[i, (n_2+1):end, 1], pos[i, (n_2+1):end, 2], pos[i, (n_2+1):end, 3], color = "red")
