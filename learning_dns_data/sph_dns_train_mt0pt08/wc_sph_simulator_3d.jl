@@ -1,20 +1,21 @@
+
 """
-Generating 2D WCSPH (AV) taylor green vortex decay flow
+Generating 3D WC_SPH + (AV) on Periodic boundary conditions
 """
 
 using NPZ, Plots, Statistics, LaTeXStrings
 
 
-T = 2000
+T = 1000
 t_save = 1   #initial time for saving
 
-# IC = "Vrandn"
-IC = "sph_equilibrium"
-extern_f = "none"
-
-vmag = 1.0  #initial magnitude of TG velocity
+IC = "Vrandn"
+# IC = "sph_equilibrium"
 # IC = "TG"
-method = "AV_neg_rel"
+extern_f = "deterministic"
+
+vmag = 3.0  #initial magnitude of TG velocity
+method = "wc_sph"
 
 #params:
 β = 1.0  #usual value of params for alpha and β but these depend on problem
@@ -35,10 +36,9 @@ p = vec(collect.(p)) #particles
 N = length(p)
 m = (2. * pi)^D / N;
 
-# sigma = (10. / (7. * pi * h * h)); #2D normalizing factor
-sigma = 1/(pi*h^3)  #3D normalizing factor
 
 function W(r, h)
+  sigma = 1/(pi*h^3)  #3D normalizing factor
   q = r / h;   if (q > 2.)   return 0.;   end
   if (q > 1.)   return (sigma * (2. - q)^3 / 4.);   end
   return (sigma * (1. - 1.5 * q * q * (1. - q / 2.)));
@@ -46,6 +46,7 @@ end
 
 # H(r) = (d W / d r) / r
 function H(r, h)
+  sigma = 1/(pi*h^3)  #3D normalizing factor
   q = r / h;   if (q > 2.)   return 0.;   end
   if (q > 1.)   return (-3. * sigma * (2. - q)^2 / (4. * h * r));   end
   return (sigma * (-3. + 9. * q / 4.) / h^2);
@@ -57,7 +58,6 @@ function Pres(rho, c, g)
 end
 
 
-# P(rho) / rho^2
 function P_d_rho2(rho, c, g)
   return Pres(rho, c, g) / (rho^2);
 end
@@ -88,14 +88,11 @@ end
 # size l_hash. We have l_hash >= h. The particles interact if they
 # differ in their "hash" coordinates no more than 2 (i.e., r < 2 h).
 n_hash = floor(Int, 2. * pi / h);   l_hash = 2. * pi / n_hash;
-
-# n_hash = floor(Int, 2. * pi / h);   l_hash = 2. * pi / n_hash;
 function obtain_sph_AV_A(X, V, p_in)
   c_in, α_in, β_in, po_in, θ_in = p_in
   A = zeros(N, D);
   rho = zeros(N);
   mPdrho2 = zeros(N);
-  # tke = 0.5*mean(V[: ,1].^2 .+ V[: ,2].^2 .+ V[: ,3].^2);
 
   hash = [Set() for i in 1 : n_hash, j in 1 : n_hash, k in 1 : n_hash];
   for n in 1 : N
@@ -147,7 +144,6 @@ function obtain_sph_AV_A(X, V, p_in)
   XX = zeros(D); VV = zeros(D);
   # computing A
   for n in 1 : N
-    # A[n, :] = obtain_forcing_A(X[n, :]);
     x_hash = [floor(Int, X[n, 1] / l_hash) + 1,
               floor(Int, X[n, 2] / l_hash) + 1,
               floor(Int, X[n, 3] / l_hash) + 1];
@@ -192,120 +188,7 @@ function obtain_sph_AV_A(X, V, p_in)
 end
 
 
-#
-# function obtain_sph_av_A(X, V, α, β, h, c)
-#   μ = 0.0
-#   Π = 0.0
-#   A = zeros(N,D);
-#   rho = zeros(N);
-#   mPdrho2 = zeros(N);
-#   tke = 0.5*mean(V[: ,1].^2 .+ V[: ,2].^2 .+ V[: ,3].^2);
-#
-# # putting coordinates inside the (2 pi)^2 torus, building hash
-#   hash = [Set() for i in 1 : n_hash, j in 1 : n_hash, k in 1 : n_hash];
-#   for n in 1 : N
-#     for i in 1 : D
-#       while (X[n, i] < 0.)   X[n, i] += 2. * pi;   end
-#       while (X[n, i] > 2. * pi)   X[n, i] -= 2. * pi;  end
-#     end
-#     push!(hash[floor(Int, X[n, 1] / l_hash) + 1,
-#                floor(Int, X[n, 2] / l_hash) + 1,
-#                floor(Int, X[n, 3] / l_hash) + 1], n);
-#   end
-# # computing rho
-#   XX = zeros(D);
-#   for n in 1 : N
-#     x_hash = [floor(Int, X[n, 1] / l_hash) + 1,
-#               floor(Int, X[n, 2] / l_hash) + 1,
-#               floor(Int, X[n, 3] / l_hash) + 1];
-#     for xa_hash in x_hash[1] - 2 : x_hash[1] + 2
-#       xb_hash = xa_hash;    while (xb_hash < 1)    xb_hash += n_hash;   end
-#       while (xb_hash > n_hash)    xb_hash -= n_hash;   end
-#       for ya_hash in x_hash[2] - 2 : x_hash[2] + 2
-#         yb_hash = ya_hash;    while (yb_hash < 1)    yb_hash += n_hash;   end
-#         while (yb_hash > n_hash)    yb_hash -= n_hash;   end
-#         for za_hash in x_hash[3] - 2 : x_hash[3] + 2
-#           zb_hash = za_hash;    while (zb_hash < 1)    zb_hash += n_hash;   end
-#           while (zb_hash > n_hash)    zb_hash -= n_hash;   end
-#           for n2 in hash[xb_hash, yb_hash, zb_hash]
-#
-#             close = true; r2 = 0.;
-#             for i in 1 : D
-#               XX[i] = X[n, i] - X[n2, i];
-#               while (XX[i] > pi)   XX[i] -= 2. * pi;   end
-#               while (XX[i] < -pi)   XX[i] += 2. * pi;   end
-#               r2 += XX[i] * XX[i];
-#               if (r2 > 4. * h * h)   close = false; break;   end
-#             end
-#             if (close)
-#               tmp = m * W(sqrt(r2), h); rho[n] += tmp;
-#             end
-#           end
-#         end
-#     end   end
-#   end
-#   for n in 1 : N
-#     mPdrho2[n] = m * P_d_rho2(rho[n]);
-#   end
-#
-#   XX = zeros(D); VV = zeros(D);
-#   # computing A
-#   for n in 1 : N
-#     # A[n, :] = obtain_forcing_A(X[n, :]);
-#     x_hash = [floor(Int, X[n, 1] / l_hash) + 1,
-#               floor(Int, X[n, 2] / l_hash) + 1,
-#               floor(Int, X[n, 3] / l_hash) + 1];
-#     for xa_hash in x_hash[1] - 2 : x_hash[1] + 2
-#       xb_hash = xa_hash;    while (xb_hash < 1)    xb_hash += n_hash;   end
-#       while (xb_hash > n_hash)    xb_hash -= n_hash;   end
-#       for ya_hash in x_hash[2] - 2 : x_hash[2] + 2
-#         yb_hash = ya_hash;    while (yb_hash < 1)    yb_hash += n_hash;   end
-#         while (yb_hash > n_hash)    yb_hash -= n_hash;   end
-#         for za_hash in x_hash[3] - 2 : x_hash[3] + 2
-#           zb_hash = za_hash;    while (zb_hash < 1)    zb_hash += n_hash;   end
-#           while (zb_hash > n_hash)    zb_hash -= n_hash;   end
-#           for n2 in hash[xb_hash, yb_hash, zb_hash]
-#
-#             close = true;   r2 = 0.;
-#             for i in 1 : D
-#               XX[i] = X[n, i] - X[n2, i];
-#               VV[i] = V[n, i] - V[n2, i];
-#               while (XX[i] > pi)   XX[i] -= 2. * pi;   end
-#               while (XX[i] < -pi)   XX[i] += 2. * pi;   end
-#               r2 += XX[i] * XX[i];
-#               if (r2 > 4. * h * h)   close = false; break;   end
-#             end
-#             if (close)
-#               Π = compute_Π(XX, VV, rho[n], rho[n2], α, β, h, c)
-#               tmp = -(mPdrho2[n] + mPdrho2[n2] + m*Π) * H(sqrt(r2), h);
-#               for i in 1 : D
-#                 A[n, i] += tmp * XX[i] #+ θ * (V[n, i] - mean(V[:, i]));
-#               end
-#             end
-#           end
-#         end
-#     end   end
-#   end
-#   # for i in 1 : D
-#   #   A[:, i] += (θ/tke) * (V[:, i] .- mean(V[:, i]))
-#   # end
-#   return A, rho
-# end
-
-
-
 #---------------Initial conditions (and boundary condistion)
-
-include("./data_loader.jl")
-
-pos_path = "./wc_dns_unif_4096_gen_data_mt0.08/pos_traj_4k.npy"
-vel_path = "./wc_dns_unif_4096_gen_data_mt0.08/vel_traj_4k.npy"
-rho_path = "./wc_dns_unif_4096_gen_data_mt0.08/rho_traj_4k.npy"
-
-traj_gt, vels_, rhos_ = load_dns_tracers(pos_path, vel_path, rho_path)
-
-sph_eq = "./data/traj_N4096_T1000_ts1_h0.335_sph_equilibrium_cdt0.4_c10.0_α1.0_β2.0_θ0.5_AV_neg_rel.npy"
-ic = npzread(sph_eq)[end,:,:]
 
 function obtain_vrand_ic()
   X = zeros(N, D); V = zeros(N, D);
@@ -315,16 +198,17 @@ function obtain_vrand_ic()
     X[n, 3] = p[n][3] #+ 0.005 * (rand() - 0.5)
   end
   X = mod.(X, 2*pi);
-  for n in 1 : N
-    #Taylor green intitial condition
-    V[n, 1] = vmag * sin(X[n, 1]) * cos(X[n, 2]) * cos(X[n, 3])
-    V[n, 2] = -vmag * cos(X[n, 1]) * sin(X[n, 2]) * cos(X[n, 3]);
-    for i in 1 : D
-      while (X[n, i] < 0.)   X[n, i] += 2. * pi;   end
-      while (X[n, i] > 2. * pi)   X[n, i] -= 2. * pi;  end
+  if IC == "TG"
+    for n in 1 : N
+      #Taylor green intitial condition
+      V[n, 1] = vmag * sin(X[n, 1]) * cos(X[n, 2]) * cos(X[n, 3])
+      V[n, 2] = -vmag * cos(X[n, 1]) * sin(X[n, 2]) * cos(X[n, 3]);
+      for i in 1 : D
+        while (X[n, i] < 0.)   X[n, i] += 2. * pi;   end
+        while (X[n, i] > 2. * pi)   X[n, i] -= 2. * pi;  end
+      end
     end
   end
-
   if IC == "Vrandn"
     V = vmag * randn(N, D)
   end
@@ -338,23 +222,19 @@ end
 
 #-------------- Integration
 
-function vel_verlet(α, β, h, c, T)
+function vel_verlet(p_h, T)
   """
-  velocity verlet without external forcing
-    returns trajectories, velocitys and densities of particles
+    velocity verlet
   """
 
-  # X, V = obtain_vrand_ic()   #initial conditions
-  # X = traj_gt[1,:,:]; V = zeros(N, D);
-  X = ic; V = zeros(N, D);
+  X, V = obtain_vrand_ic()   #initial conditions
 
   traj, vels = zeros(T+1,N,D), zeros(T+1,N,D); rhos = zeros(T+1, N);
 	traj[1, :, :] = X; vels[1, :, :] = V;
-	A, rho = obtain_sph_av_A(X, V, α, β, h, c);
+	A, rho = obtain_sph_AV_A(X, V, p_h);
 	rhos[1,:] = rho;
 
 	for k in 1 : T
-	  # A, rho = obtain_sph_av_A(X, V, α, β, h, c)
     A, rho = obtain_sph_AV_A(X, V, p_h)
 
 	  #Verlet
@@ -367,11 +247,9 @@ function vel_verlet(α, β, h, c, T)
   		end
 	  end
 
-	  # A, rho = obtain_sph_av_A(X, V, α, β, h, c)
     A, rho = obtain_sph_AV_A(X, V, p_h)
-
 	  for n in 1 : N   for i in 1 : D
-		  V[n, i] += 0.5 * dt * A[n, i] #+ stochastic_term();
+		  V[n, i] += 0.5 * dt * A[n, i];
 	  end   end
 
 	  vels[k + 1, :, :] = V;
@@ -382,8 +260,7 @@ function vel_verlet(α, β, h, c, T)
 	return traj, vels, rhos
 end
 
-
-traj, vels, rhos = vel_verlet(α, β, h, c, T)
+traj, vels, rhos = vel_verlet(p_h, T)
 
 
 function obtain_tke(vels)
@@ -424,16 +301,9 @@ turb_ke = compute_turb_ke(vels)
 
 
 #-----------Outputs
-
-
-function make_dir(path)
-        if isdir(path) == true
-               println("directory already exists")
-           else mkdir(path)
-        end
-end
-
+include("../utils/basic_utils.jl")
 make_dir("data"); make_dir("figures"); make_dir("sims")
+
 
 #-----------Outputs
 pos_path = "./data/traj_N$(N)_T$(T)_ts$(t_save)_h$(h)_$(IC)_cdt$(cdt)_c$(c)_α$(α)_β$(β)_θ$(θ)_$(method).npy"
@@ -480,13 +350,6 @@ function plot_KE_fluc()
     xlabel!(L"t")
     ylabel!(L"Avg KE")
     display(plt3)
-
-	# plt = plot(turb_ke, label=L"k", color="blue", linewidth = 2.25)
-  #   title!("Turbulent kinetic energy, θ = $(θ)")
-  #   xlabel!(L"t")
-  #   ylabel!(L"turbulent KE")
-  #   display(plt)
-  #   savefig(plt, file_out_turb_ke)
 end
 
 
@@ -503,7 +366,7 @@ end
 #UAHPC seems to need this formatting
 ENV["GKSwstype"]="100"
 
-gen_data_files(traj, vels, rhos)
+# gen_data_files(traj, vels, rhos)
 plot_KE_fluc()
 plotting_Re()
 simulate(traj, 10)
