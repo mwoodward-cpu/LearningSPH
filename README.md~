@@ -5,24 +5,27 @@ Learn-able hierarchy of parameterized Lagrangian models incrementally encoding S
 
 We develop a hierarchy of parameterized Lagrangian models that we train and anlyze on both SPH and DNS data. Starting from the least informed Neural ODE based model, and incrementally enforcing physical structure using SPH based modeling until the model is a fully parameterized weakly compressible SPH formulation with a novel parameteried smoothing kernel. Multilayer Perceptrons (MLPs) with hyperbolic tangent activation functions are used as a universal function approximators and are embedded within the ODE structure describing the Lagrangian flows, such as in approximating the Equation of State within SPH model. It was found through hyper-parameter tuning that 2 hidden layers were sufficient for each model using a NN. 
 
-## New parameterized smoothing kernels
-We develop and use two new parameterized smoothing kernels, which after training on DNS data are found to perform best at generalizing to other flows not seen in training. 
+## New parameterized smoothing kernel
+We develop and use a new parameterized smoothing kernel, which after training on DNS data is found to perform best at generalizing to other flows not seen in training. 
 
 ## Mixed mode AD with Sensitivity analysis
 Local sensitivity analysis (SA) is a classical technique found in many applications, such as gradient-based optimization, optimal control, parameter identification, model diagnostics; which was also utilized recently to  learn neural network parameters within ODEs (such as in Neural ODE). In the context of this work, we use SA to compute gradients of our hierarchy of parameterized models. We mix SA with Automatic Differentiation (AD);  forward mode and reverse mode AD is applied to derivatives within the SA algorithm, where the method is chosen based on efficiency (depending on the dimension of the input and output space of the function being differentiated).
 
-The code is found in learning_dns_data_Re80/sph_dns_train_mt0pt08/sensitivities/sensitivity_(model).jl, which combines both SA and AD. 
+The code is found in sensitivity_(model).jl, which combines both SA and AD. 
 
 ## Loss functions
-We construct three different loss functions: trajectory based (Lagrangian), field based Eulerian, and Lagrangian statistics based, all found in the loss_functions.jl file. Since our overall goal involves learning SPH models for turbulence applications, it is the underlying statistical features and large scale field structures we want our models to learn and generalize with. Once the senstivities are found, the gradient of the loss functions are also found in loss_functions.jl 
+We construct three different loss functions: trajectory based (Lagrangian), field based Eulerian, and Lagrangian statistics based, all found in the loss_functions.jl file. Since our overall goal involves learning SPH models for turbulence applications, it is the underlying statistical features and large scale field structures we want our models to learn and generalize with.
 
+
+## Running code
+We provide some general guidance for reproduciblity.
 
 
 ### SPH training data: 
 in 3d(or 2d)_phys_semi_inf directories, there is a julia file sph_av_3d.jl (or sph_2d_av_turb_ke.jl) for simulating Eulers equations with an Artificial viscosity form and using weakly compressible formulation; see our paper for more details. Parameters of the simulator are commented. Note that some SPH flow data is already provided in the data directories (where parameters are selected as described in the paper). 
 
 ### Learning algorithm
-The main.jl file consists of our mixed mode learning algorithm. To select which SA method is used, choose either sens_method = "forward" or sens_method="adjoint" where the selection is forward when $3*d*N >> p$, where $p$ is the number of parameters $d$ is dimension and $N$ is the number of particles, and adjoint is selected if $3*d*N << p$. The loss method is selected simlarly between a combination of the loss functions described above (we find the best results, and for those reasons discussed further in the paper, that loss_method = "kl_lf" performs best; which is the lagrangian statistical based loss using the KL-divergence + the field based loss function using the MSE of difference in velocity fields. The model is selected for by uncommenting "method". Once the model, and methods are choosen for learning, along with the hyper-parameters of the learning, then the ground truth SPH data must be loaded. Running the main.jl file will output all necessary data that can be used in the post_processing directory.
+The main.jl file consists of our mixed mode learning algorithm. To select which SA method is used, uncomment either sens_method = "forward" or sens_method="adjoint". The loss method is selected simlarly between a combination of the loss functions described above (we find the best results, and for those reasons discussed further in the paper, that loss_method = "kl_lf" performs best; which is the lagrangian statistical based loss using the KL-divergence + the field based loss function using the MSE of difference in velocity fields. The model is selected for by uncommenting "method". Once the model, and methods are choosen for learning, along with the hyper-parameters of the learning, then the ground truth SPH data must be loaded. Running the main.jl file will output all necessary data that can be used in the post_processing directory.
 
 ## Paper citation
 
