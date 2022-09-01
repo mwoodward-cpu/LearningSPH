@@ -508,23 +508,25 @@ end
 function compare_eos(p_h)
     gr(size=(600,600))
     Pnn_comp(ρ) = re(p_h)([ρ])[1]
-	max_rho = maximum(rhos_gt[1:11,:]);
-	min_rho = minimum(rhos_gt[1:11,:]);
+	# max_rho = maximum(rhos_gt[1:11,:]);
+	# min_rho = minimum(rhos_gt[1:11,:]);
 	mean_rho = mean(rhos_gt[1:11,:]);
-	std_3 = 3*std(rhos_gt[1:11,:]);
+	mean_rho = 1.035;
+	# std_3 = 3*std(rhos_gt[1:11,:]);
+	std_3 = 0.06;
 	rho_std_p = mean_rho + std_3;
 	rho_std_m = mean_rho - std_3;
-	r_s = min_rho - 0.042;
-	r_e = max_rho + 0.042;
+	# r_s = min_rho - 0.042;
+	# r_e = max_rho + 0.042;
 
 	plt = plot(x -> Pres(x, c_gt, g), r_s, r_e, label=L"P_{truth}", color="blue", linewidth = 2.5)
     plot!(x -> Pnn_comp(x), r_s, r_e, marker=:x, markersize=5,
                   color="forestgreen", markercolor = :black,
                   label=L"P_{nn(\theta)}(\rho)", linestyle=:dash, linewidth = 2.5)
 
-	vline!([min_rho, max_rho], linewidth = 1.5, color="orangered4", linestyle=:dash, label=L"(\rho_{min}, \rho_{max})")
-	vline!([rho_std_p, rho_std_m], linewidth = 2.5, color="black", label=L"(\mu_{\rho} - 3\sigma_{\rho}, \mu_{\rho} + 3\sigma_{\rho})", linestyle=:dot)
-	vline!([mean_rho], linewidth = 2.5, color="purple", linestyle=:dashdot, label=L"\rho_{avg}")
+	# vline!([min_rho, max_rho], linewidth = 1.5, color="orangered4", linestyle=:dash, label=L"(\rho_{min}, \rho_{max})")
+	vline!([rho_std_p, rho_std_m], linewidth = lw, color="black", label=L"(\mu_{\rho} - 3\sigma_{\rho}, \mu_{\rho} + 3\sigma_{\rho})", linestyle=:dot)
+	vline!([mean_rho], linewidth = lw, color="purple", linestyle=:dashdot, label=L"\rho_{avg}")
 
     title!(L"\textrm{Learning EoS with } L_f", titlefont=22)
     xlabel!(L"\rho", xtickfontsize=12, xguidefontsize=20)
