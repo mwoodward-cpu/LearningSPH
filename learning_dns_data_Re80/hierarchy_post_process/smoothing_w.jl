@@ -324,19 +324,20 @@ plot_kernels_der_2(a1, b1, a2, b2, h)
 # plot_kernels_der_ad(a1, b1, a2, b2, h)
 # plot_kernels_der_r_ad(a1, b1, a2, b2, h)
 
-c_ab, α_ab, β_ab, g_ab, a_ab, b_ab, po_ab, θ_ab = p_fin_wab
-c_2ab, α_2ab, β_2ab, g_2ab, a_2ab, b_2ab, po_2ab, θ_2ab = p_fin_w2ab
-c_c, α_c, β_c, g_c, po_c, θ_c = p_fin_wcub
-c_q, α_q, β_q, g_q, po_q, θ_q = p_fin_wliu
 
-println("learned c's: c_ab = ", c_ab, "  c_2ab = ", c_2ab, "  c_c = ", c_c, "  c_q = ", c_q)
-println("learned α's: α_ab = ", α_ab, "  α_2ab = ", α_2ab, "  α_c = ", α_c, "  α_q = ", α_q)
-println("learned β's: β_ab = ", β_ab, "  β_2ab = ", β_2ab, "  β_c = ", β_c, "  β_q = ", β_q)
-println("learned γ's: g_ab = ", g_ab, "  g_2ab = ", g_2ab, "  g_c = ", g_c, "  g_q = ", g_q)
-println("learned p0's: p_ab = ", po_ab, "  p_2ab = ", po_2ab, "  p_c = ", po_c, "  p_q = ", po_q)
-println("learned θ's: θ_ab = ", θ_ab, "  θ_2ab = ", θ_2ab, "  θ_c = ", θ_c, "  θ_q = ", θ_q)
-println("----------------------------------------------------------------------------------")
-
-println("learned a's: a_ab = ", a_ab, "  a_2ab = ", a_2ab)
-println("learned b's: b_ab = ", b_ab, "  b_2ab = ", b_2ab)
-println("   ")
+# c_ab, α_ab, β_ab, g_ab, a_ab, b_ab, po_ab, θ_ab = p_fin_wab
+# c_2ab, α_2ab, β_2ab, g_2ab, a_2ab, b_2ab, po_2ab, θ_2ab = p_fin_w2ab
+# c_c, α_c, β_c, g_c, po_c, θ_c = p_fin_wcub
+# c_q, α_q, β_q, g_q, po_q, θ_q = p_fin_wliu
+#
+# println("learned c's: c_ab = ", c_ab, "  c_2ab = ", c_2ab, "  c_c = ", c_c, "  c_q = ", c_q)
+# println("learned α's: α_ab = ", α_ab, "  α_2ab = ", α_2ab, "  α_c = ", α_c, "  α_q = ", α_q)
+# println("learned β's: β_ab = ", β_ab, "  β_2ab = ", β_2ab, "  β_c = ", β_c, "  β_q = ", β_q)
+# println("learned γ's: g_ab = ", g_ab, "  g_2ab = ", g_2ab, "  g_c = ", g_c, "  g_q = ", g_q)
+# println("learned p0's: p_ab = ", po_ab, "  p_2ab = ", po_2ab, "  p_c = ", po_c, "  p_q = ", po_q)
+# println("learned θ's: θ_ab = ", θ_ab, "  θ_2ab = ", θ_2ab, "  θ_c = ", θ_c, "  θ_q = ", θ_q)
+# println("----------------------------------------------------------------------------------")
+#
+# println("learned a's: a_ab = ", a_ab, "  a_2ab = ", a_2ab)
+# println("learned b's: b_ab = ", b_ab, "  b_2ab = ", b_2ab)
+# println("   ")

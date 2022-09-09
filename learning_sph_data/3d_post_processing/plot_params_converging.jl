@@ -5,7 +5,7 @@ gr(size=(900,750));
 α = 1.0
 β = 2.0*α  #usual value of params for alpha and β but these depend on problem
 θ = 5e-1;
-c = 10.0
+c = c_gt = 10.0
 g = 7.0
 h = 0.335
 cdt = 0.4;
@@ -36,16 +36,16 @@ function plot_4g_param()
     xs = 1 : vis_rate : (vis_rate * size(c_out)[1])
 
     plt = plot(xs, c_out, label=L"\hat{c}", color="green", linewidth = lw)
-    plot!(xs, c_gt_data, label=L"c", color="green", linestyle=:dash, linewidth = lw)
+    plot!(xs, c_gt_data, label=L"c_{truth}", color="green", linestyle=:dash, linewidth = lw)
 
     plot!(xs, α_out, label=L"\hat{\alpha}", color="blue", linewidth = lw)
-    plot!(xs, α_gt_data, label=L"\alpha", linestyle=:dash, color = "blue", linewidth = lw)
+    plot!(xs, α_gt_data, label=L"\alpha_{truth}", linestyle=:dash, color = "blue", linewidth = lw)
 
     plot!(xs, β_out, label=L"\hat{\beta}", color="purple", linewidth = lw)
-    plot!(xs, β_gt_data, label=L"\beta", linestyle=:dash, color = "purple", linewidth = lw)
+    plot!(xs, β_gt_data, label=L"\beta_{truth}", linestyle=:dash, color = "purple", linewidth = lw)
 
     plot!(xs, g_out, label=L"\hat{\gamma}", color="gold4", linewidth = lw)
-    plot!(xs, g_gt_data, label=L"\gamma", linestyle=:dash, color = "gold4", linewidth = lw, legendfontsize=legend_fs)
+    plot!(xs, g_gt_data, label=L"\gamma_{truth}", linestyle=:dash, color = "gold4", linewidth = lw, legendfontsize=legend_fs)
 
     title!(L"\textrm{Validation of Learning on SPH data}", titlefont=title_fs)
 	xlabel!(L"\textrm{Iterations}", xtickfontsize=tick_fs, xguidefontsize=yaxis_fs)
